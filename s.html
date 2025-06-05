@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vegas Empire | Спортивные ставки 80-х</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik+Mono+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --neon-pink: #ff6ec7;
+            --neon-blue: #00f3ff;
+            --neon-green: #4dff4d;
+            --neon-purple: #b04dff;
+            --dark-bg: #0f0f1a;
+            --retro-orange: #ff7b00;
+            --retro-yellow: #ffcc00;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 110, 199, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 20%);
+            color: white;
+            font-family: 'Courier New', monospace;
+            overflow-x: hidden;
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(
+                    rgba(18, 16, 16, 0) 50%, 
+                    rgba(0, 0, 0, 0.25) 50%
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255, 0, 0, 0.06),
+                    rgba(0, 255, 0, 0.02),
+                    rgba(0, 0, 255, 0.06)
+                );
+            background-size: 100% 4px, 4px 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #0f0f1a 0%, #1e1e3a 50%, #0f0f1a 100%);
+            border-bottom: 4px solid var(--neon-pink);
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                var(--neon-pink), 
+                var(--neon-blue), 
+                var(--neon-green), 
+                var(--neon-purple),
+                var(--neon-pink));
+            background-size: 200% 100%;
+            animation: rainbow 3s linear infinite;
+        }
+        
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        
+        h1 {
+            font-family: 'Rubik Mono One', sans-serif;
+            color: var(--retro-yellow);
+            text-shadow: 0 0 10px var(--retro-orange), 0 0 20px var(--retro-orange);
+            font-size: 2.5rem;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        
+        .promo-banner {
+            background: linear-gradient(90deg, #1a0f1a 0%, #3a1e3a 50%, #1a0f1a 100%);
+            border: 2px dashed var(--neon-purple);
+            color: var(--neon-green);
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .promo-banner::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .sports-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .sport-tab {
+            padding: 12px 20px;
+            background: #1e1e3a;
+            border: 2px solid var(--neon-blue);
+            color: white;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sport-tab:hover {
+            background: var(--neon-blue);
+            color: var(--dark-bg);
+            text-shadow: 0 0 5px white;
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+        
+        .sport-tab.active {
+            background: var(--neon-pink);
+            color: var(--dark-bg);
+            font-weight: bold;
+            border-color: white;
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+        
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .match-card {
+            background: rgba(30, 30, 58, 0.8);
+            border: 2px solid var(--neon-green);
+            padding: 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .match-card::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 2px solid transparent;
+            border-image: linear-gradient(45deg, var(--neon-pink), var(--neon-blue), var(--neon-green)) 1;
+            animation: borderAnim 4s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .match-card:hover::before {
+            opacity: 1;
+        }
+        
+        @keyframes borderAnim {
+            0% { border-image-source: linear-gradient(45deg, var(--neon-pink), var(--neon-blue), var(--neon-green)); }
+            50% { border-image-source: linear-gradient(45deg, var(--neon-blue), var(--neon-green), var(--neon-pink)); }
+            100% { border-image-source: linear-gradient(45deg, var(--neon-green), var(--neon-pink), var(--neon-blue)); }
+        }
+        
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .teams {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--retro-yellow);
+            font-family: 'Courier New', monospace;
+        }
+        
+        .match-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: var(--neon-blue);
+        }
+        
+        .odds-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .odd {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--neon-purple);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .odd:hover {
+            background: var(--neon-purple);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .play-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, var(--retro-orange), var(--retro-yellow));
+            border: none;
+            color: black;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .play-btn:hover {
+            background: linear-gradient(90deg, var(--retro-yellow), var(--retro-orange));
+            box-shadow: 0 0 15px var(--retro-yellow);
+        }
+        
+        .promo-section {
+            background: rgba(30, 30, 58, 0.8);
+            border: 2px solid var(--neon-pink);
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+            position: relative;
+        }
+        
+        .promo-section::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 110, 199, 0.1) 0%,
+                rgba(0, 243, 255, 0.1) 50%,
+                rgba(77, 255, 77, 0.1) 100%
+            );
+            z-index: -1;
+        }
+        
+        .promo-code {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.5rem;
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green);
+            margin: 20px 0;
+            letter-spacing: 3px;
+            animation: pulse 1.5s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            from { text-shadow: 0 0 5px var(--neon-green); }
+            to { text-shadow: 0 0 15px var(--neon-green), 0 0 20px white; }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: var(--neon-blue);
+            font-family: 'Press Start 2P', cursive;
+        }
+        
+        .glitch {
+            animation: glitch 1s linear infinite;
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(-3px, -3px); }
+            60% { transform: translate(3px, 3px); }
+            80% { transform: translate(3px, -3px); }
+            100% { transform: translate(0); }
+        }
+
+        /* Стили для уведомлений */
+        .notification-bell {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--neon-pink);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 0 15px var(--neon-pink);
+            animation: pulse 2s infinite;
+        }
+
+        .notification-bell i {
+            color: black;
+            font-size: 24px;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 12px;
+            height: 12px;
+            background-color: var(--neon-green);
+            border-radius: 50%;
+            display: none;
+        }
+
+        /* Модальное окно настроек */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1002;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--dark-bg);
+            border: 2px solid var(--neon-purple);
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 5px;
+            box-shadow: 0 0 20px var(--neon-purple);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--neon-blue);
+            padding-bottom: 10px;
+        }
+
+        .modal-title {
+            color: var(--neon-green);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--neon-pink);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .settings-section {
+            margin-bottom: 20px;
+        }
+
+        .settings-title {
+            color: var(--neon-blue);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        .team-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .team-checkbox {
+            display: flex;
+            align-items: center;
+        }
+
+        .team-checkbox input {
+            margin-right: 8px;
+        }
+
+        .notification-history {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--neon-purple);
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .notification-item {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.8rem;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-time {
+            color: var(--neon-blue);
+            font-size: 0.7rem;
+            margin-top: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .matches-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .sport-tab {
+                padding: 8px 12px;
+                font-size: 0.6rem;
+            }
+
+            .team-checkboxes {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    
+    <!-- Кнопка уведомлений -->
+    <div class="notification-bell" id="notificationBell">
+        <i class="fas fa-bell"></i>
+        <div class="notification-dot" id="notificationDot"></div>
+    </div>
+
+    <!-- Модальное окно настроек уведомлений -->
+    <div class="modal" id="notificationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">НАСТРОЙКИ УВЕДОМЛЕНИЙ</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            
+            <div class="settings-section">
+                <h4 class="settings-title">ВКЛЮЧИТЬ УВЕДОМЛЕНИЯ</h4>
+                <label class="team-checkbox">
+                    <input type="checkbox" id="enableNotifications"> Получать уведомления
+                </label>
+                <label class="team-checkbox">
+                    <input type="checkbox" id="enableSound"> Звуковые уведомления
+                </label>
+            </div>
+            
+            <div class="settings-section">
+                <h4 class="settings-title">ВЫБЕРИТЕ ВАЖНЫЕ КОМАНДЫ</h4>
+                <div class="team-checkboxes" id="teamCheckboxes">
+                    <!-- Список команд будет заполнен JavaScript -->
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h4 class="settings-title">ИСТОРИЯ УВЕДОМЛЕНИЙ</h4>
+                <div class="notification-history" id="notificationHistory">
+                    <!-- История уведомлений будет заполнена JavaScript -->
+                </div>
+            </div>
+            
+            <button class="play-btn" id="saveSettings">СОХРАНИТЬ НАСТРОЙКИ</button>
+        </div>
+    </div>
+    
+    <header>
+        <div class="container">
+            <h1>VEGAS EMPIRE SPORTS</h1>
+            <p style="color: var(--neon-blue); margin-top: 5px; font-family: 'Press Start 2P', cursive; font-size: 0.7rem;">СПОРТИВНЫЕ СТАВКИ В СТИЛЕ 80-Х</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="promo-banner">
+            <p>🔥 ИСПОЛЬЗУЙ ПРОМОКОД <span style="color: var(--retro-yellow);">EMPIRE999</span> И ПОЛУЧИ БОНУС 150% НА ПЕРВЫЙ ДЕПОЗИТ! 🔥</p>
+        </div>
+        
+        <div class="sports-tabs">
+            <div class="sport-tab active" data-sport="all">Все матчи</div>
+            <div class="sport-tab" data-sport="soccer">Футбол</div>
+            <div class="sport-tab" data-sport="basketball">Баскетбол</div>
+            <div class="sport-tab" data-sport="tennis">Теннис</div>
+            <div class="sport-tab" data-sport="hockey">Хоккей</div>
+            <div class="sport-tab" data-sport="baseball">Бейсбол</div>
+        </div>
+        
+        <div id="matches-container">
+            <div class="loading">
+                <p class="glitch">ЗАГРУЗКА ДАННЫХ...</p>
+                <p style="margin-top: 20px; font-size: 0.6rem;">ПОДКЛЮЧЕНИЕ К СПУТНИКОВОЙ СЕТИ</p>
+            </div>
+        </div>
+        
+        <div class="promo-section">
+            <h2 style="color: var(--neon-pink); font-family: 'Press Start 2P', cursive; font-size: 1rem;">ЭКСКЛЮЗИВНОЕ ПРЕДЛОЖЕНИЕ</h2>
+            <p style="color: var(--neon-blue);">ВВЕДИТЕ ПРОМОКОД ПРИ РЕГИСТРАЦИИ И ПОЛУЧИТЕ:</p>
+            <div class="promo-code">EMPIRE999</div>
+            <p style="color: white; font-size: 0.9rem;">150% БОНУСА НА ПЕРВЫЙ ДЕПОЗИТ + 50 ФРИСПИНОВ</p>
+            <button class="play-btn" onclick="playNow()">ИГРАТЬ СЕЙЧАС</button>
+        </div>
+    </div>
+
+    <!-- Аудио для уведомлений -->
+    <audio id="notificationSound" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" preload="auto"></audio>
+
+    <script>
+        // Конфигурация
+        const CONFIG = {
+            cacheKey: 'vegas_empire_matches_cache',
+            cacheDuration: 5 * 60 * 1000, // 5 минут
+            updateInterval: 5 * 60 * 1000, // 5 минут
+            notificationCheckInterval: 60 * 1000, // 1 минута
+            notificationHistoryKey: 'vegas_notification_history',
+            settingsKey: 'vegas_notification_settings',
+            allTeams: [
+                'Реал Мадрид', 'Барселона', 'Манчестер Юнайтед', 'Ливерпуль',
+                'Челси', 'Арсенал', 'Манчестер Сити', 'ПСЖ',
+                'Бавария', 'Ювентус', 'Милан', 'Интер',
+                'Лос-Анджелес Лейкерс', 'Голден Стэйт Уорриорз', 'Чикаго Буллз', 'Бостон Селтикс',
+                'Новак Джокович', 'Рафаэль Надаль', 'Карлос Алькарас', 'Дэнил Медведев',
+                'Тампа Бэй Лайтнинг', 'Колорадо Эвеланш', 'Торонто Мейпл Лифс', 'Монреаль Канадиенс'
+            ]
+        };
+
+        // Основной объект приложения
+        const App = {
+            currentFilter: 'all',
+            updateTimer: null,
+            notificationTimer: null,
+            notificationPermission: false,
+            lastNotificationTime: null,
+            settings: {
+                enabled: false,
+                sound: false,
+                selectedTeams: []
+            },
+            
+            // Инициализация
+            init() {
+                this.loadSettings();
+                this.setupFilters();
+                this.loadData();
+                this.setupAutoUpdate();
+                this.setupNotifications();
+                this.setupModal();
+                this.renderTeamCheckboxes();
+                this.loadNotificationHistory();
+                
+                // Анимация для ретро-эффекта
+                document.querySelectorAll('h1, .promo-code, .teams').forEach(el => {
+                    el.addEventListener('mouseover', () => {
+                        el.classList.add('glitch');
+                        setTimeout(() => el.classList.remove('glitch'), 500);
+                    });
+                });
+
+                // Регистрация Service Worker для push-уведомлений
+                this.registerServiceWorker();
+            },
+            
+            // Регистрация Service Worker
+            async registerServiceWorker() {
+                if ('serviceWorker' in navigator && 'PushManager' in window) {
+                    try {
+                        const registration = await navigator.serviceWorker.register('/sw.js');
+                        console.log('ServiceWorker registered');
+                        
+                        // Подписка на push-уведомления
+                        const subscription = await registration.pushManager.subscribe({
+                            userVisibleOnly: true,
+                            applicationServerKey: this.urlBase64ToUint8Array('BLx5q6ZJQJx5q6ZJQJx5q6ZJQJx5q6ZJQJx5q6ZJQJx5q6ZJQJx5q6ZJQJx5q6ZJQJx5q6ZJQJx5q6ZJQJ')
+                        });
+                        
+                        console.log('Push subscription:', subscription);
+                    } catch (error) {
+                        console.error('ServiceWorker registration failed:', error);
+                    }
+                }
+            },
+            
+            // Конвертация ключа для push-уведомлений
+            urlBase64ToUint8Array(base64String) {
+                const padding = '='.repeat((4 - base64String.length % 4) % 4);
+                const base64 = (base64String + padding)
+                    .replace(/-/g, '+')
+                    .replace(/_/g, '/');
+                
+                const rawData = window.atob(base64);
+                const outputArray = new Uint8Array(rawData.length);
+                
+                for (let i = 0; i < rawData.length; ++i) {
+                    outputArray[i] = rawData.charCodeAt(i);
+                }
+                return outputArray;
+            },
+            
+            // Загрузка настроек
+            loadSettings() {
+                const savedSettings = localStorage.getItem(CONFIG.settingsKey);
+                if (savedSettings) {
+                    this.settings = JSON.parse(savedSettings);
+                    document.getElementById('enableNotifications').checked = this.settings.enabled;
+                    document.getElementById('enableSound').checked = this.settings.sound;
+                } else {
+                    // Настройки по умолчанию
+                    this.settings = {
+                        enabled: false,
+                        sound: false,
+                        selectedTeams: CONFIG.allTeams.slice(0, 5) // Первые 5 команд по умолчанию
+                    };
+                    this.saveSettings();
+                }
+                
+                // Проверка разрешения на уведомления
+                if (this.settings.enabled) {
+                    this.checkNotificationPermission();
+                }
+            },
+            
+            // Сохранение настроек
+            saveSettings() {
+                this.settings.enabled = document.getElementById('enableNotifications').checked;
+                this.settings.sound = document.getElementById('enableSound').checked;
+                
+                // Сохраняем выбранные команды
+                this.settings.selectedTeams = [];
+                document.querySelectorAll('.team-checkbox input:checked').forEach(checkbox => {
+                    this.settings.selectedTeams.push(checkbox.value);
+                });
+                
+                localStorage.setItem(CONFIG.settingsKey, JSON.stringify(this.settings));
+                
+                // Если включены уведомления, запрашиваем разрешение
+                if (this.settings.enabled) {
+                    this.requestNotificationPermission();
+                }
+                
+                // Закрываем модальное окно
+                this.closeModal();
+                
+                // Показываем подтверждение
+                alert('Настройки сохранены!');
+            },
+            
+            // Проверка разрешения на уведомления
+            checkNotificationPermission() {
+                if (Notification.permission === 'granted') {
+                    this.notificationPermission = true;
+                } else if (Notification.permission !== 'denied') {
+                    this.requestNotificationPermission();
+                }
+            },
+            
+            // Запрос разрешения на уведомления
+            requestNotificationPermission() {
+                Notification.requestPermission().then(permission => {
+                    this.notificationPermission = (permission === 'granted');
+                    if (this.notificationPermission) {
+                        this.showWelcomeNotification();
+                    }
+                });
+            },
+            
+            // Показать приветственное уведомление
+            showWelcomeNotification() {
+                if (!this.notificationPermission) return;
+                
+                new Notification('Vegas Empire Sports', {
+                    body: 'Теперь вы будете получать уведомления о важных матчах!',
+                    icon: 'https://i.imgur.com/JQ9w5VX.png'
+                });
+                
+                // Добавляем в историю
+                this.addToNotificationHistory('Добро пожаловать! Вы подписались на уведомления');
+            },
+            
+            // Настройка уведомлений
+            setupNotifications() {
+                this.notificationTimer = setInterval(() => {
+                    if (this.settings.enabled) {
+                        this.checkImportantMatches();
+                    }
+                }, CONFIG.notificationCheckInterval);
+            },
+            
+            // Проверка важных матчей для уведомлений
+            checkImportantMatches() {
+                const cachedData = this.getCachedData();
+                if (!cachedData || !this.settings.selectedTeams || this.settings.selectedTeams.length === 0) return;
+                
+                const now = new Date();
+                const importantMatches = cachedData.filter(match => {
+                    // Проверяем, что матч еще не начался
+                    const matchTime = new Date(match.time);
+                    if (matchTime < now) return false;
+                    
+                    // Проверяем, что до матча меньше 2 часов
+                    const timeDiff = matchTime - now;
+                    if (timeDiff > 2 * 60 * 60 * 1000) return false;
+                    
+                    // Проверяем важные команды/игроки
+                    return this.settings.selectedTeams.some(important => 
+                        match.teams.some(team => team.includes(important))
+                    );
+                });
+                
+                if (importantMatches.length > 0) {
+                    this.showImportantMatchesNotification(importantMatches);
+                    document.getElementById('notificationDot').style.display = 'block';
+                }
+            },
+            
+            // Показать уведомление о важных матчах
+            showImportantMatchesNotification(matches) {
+                if (!this.notificationPermission || !this.settings.enabled) return;
+                
+                // Проверяем, чтобы не спамить уведомлениями
+                const now = new Date();
+                if (this.lastNotificationTime && (now - this.lastNotificationTime < 30 * 60 * 1000)) {
+                    return;
+                }
+                
+                this.lastNotificationTime = now;
+                
+                const matchList = matches.map(match => 
+                    `${match.teams.join(' vs ')} в ${new Date(match.time).toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'})}`
+                ).join('\n');
+                
+                // Показываем уведомление
+                const notification = new Notification('Важные матчи сегодня!', {
+                    body: `Скоро начнутся:\n${matchList}`,
+                    icon: 'https://i.imgur.com/JQ9w5VX.png'
+                });
+                
+                // Воспроизводим звук, если включен
+                if (this.settings.sound) {
+                    const sound = document.getElementById('notificationSound');
+                    sound.currentTime = 0;
+                    sound.play().catch(e => console.log('Не удалось воспроизвести звук:', e));
+                }
+                
+                // Добавляем в историю
+                this.addToNotificationHistory(`Уведомление: ${matches.length} важных матчей`);
+                
+                // Отправляем push-уведомление через Service Worker
+                if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({
+                        type: 'PUSH_NOTIFICATION',
+                        title: 'Важные матчи сегодня!',
+                        body: `Скоро начнутся:\n${matchList}`,
+                        icon: 'https://i.imgur.com/JQ9w5VX.png'
+                    });
+                }
+            },
+            
+            // Настройка модального окна
+            setupModal() {
+                const modal = document.getElementById('notificationModal');
+                const bell = document.getElementById('notificationBell');
+                const closeBtn = document.getElementById('closeModal');
+                const saveBtn = document.getElementById('saveSettings');
+                
+                bell.addEventListener('click', () => {
+                    document.getElementById('notificationDot').style.display = 'none';
+                    modal.style.display = 'flex';
+                });
+                
+                closeBtn.addEventListener('click', () => this.closeModal());
+                saveBtn.addEventListener('click', () => this.saveSettings());
+                
+                // Закрытие при клике вне окна
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        this.closeModal();
+                    }
+                });
+            },
+            
+            // Закрытие модального окна
+            closeModal() {
+                document.getElementById('notificationModal').style.display = 'none';
+            },
+            
+            // Рендер чекбоксов команд
+            renderTeamCheckboxes() {
+                const container = document.getElementById('teamCheckboxes');
+                container.innerHTML = '';
+                
+                CONFIG.allTeams.forEach(team => {
+                    const checkbox = document.createElement('div');
+                    checkbox.className = 'team-checkbox';
+                    checkbox.innerHTML = `
+                        <input type="checkbox" id="team_${team}" value="${team}" 
+                            ${this.settings.selectedTeams.includes(team) ? 'checked' : ''}>
+                        <label for="team_${team}">${team}</label>
+                    `;
+                    container.appendChild(checkbox);
+                });
+            },
+            
+            // Загрузка истории уведомлений
+            loadNotificationHistory() {
+                const history = localStorage.getItem(CONFIG.notificationHistoryKey);
+                const container = document.getElementById('notificationHistory');
+                
+                if (history) {
+                    const notifications = JSON.parse(history);
+                    container.innerHTML = notifications.map(notif => `
+                        <div class="notification-item">
+                            <div>${notif.message}</div>
+                            <div class="notification-time">${new Date(notif.timestamp).toLocaleString()}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div class="notification-item">История уведомлений пуста</div>';
+                }
+            },
+            
+            // Добавление в историю уведомлений
+            addToNotificationHistory(message) {
+                let history = [];
+                const savedHistory = localStorage.getItem(CONFIG.notificationHistoryKey);
+                
+                if (savedHistory) {
+                    history = JSON.parse(savedHistory);
+                }
+                
+                // Ограничиваем историю 50 записями
+                if (history.length >= 50) {
+                    history = history.slice(history.length - 49);
+                }
+                
+                history.push({
+                    message: message,
+                    timestamp: Date.now()
+                });
+                
+                localStorage.setItem(CONFIG.notificationHistoryKey, JSON.stringify(history));
+                this.loadNotificationHistory();
+            },
+            
+            // Остальные методы (loadData, fetchData, parseBetExplorer, mockMatches, 
+            // getCachedData, cacheData, renderMatches, setupFilters, 
+            // setupAutoUpdate, showError) остаются без изменений
+            // ... (они должны быть скопированы из предыдущего кода) ...
+            
+            async loadData() {
+                const container = document.getElementById('matches-container');
+                container.innerHTML = '<div class="loading"><p>ЗАГРУЗКА ДАННЫХ...</p></div>';
+                
+                try {
+                    // Проверяем кэш
+                    const cachedData = this.getCachedData();
+                    if (cachedData) {
+                        this.renderMatches(cachedData, this.currentFilter);
+                    }
+                    
+                    // Всегда пытаемся получить свежие данные
+                    const freshData = await this.fetchData();
+                    this.cacheData(freshData);
+                    
+                    // Если кэша не было, или данные обновились
+                    if (!cachedData || JSON.stringify(cachedData) !== JSON.stringify(freshData)) {
+                        this.renderMatches(freshData, this.currentFilter);
+                    }
+                    
+                } catch (error) {
+                    console.error('Ошибка загрузки данных:', error);
+                    this.showError(error);
+                }
+            },
+            
+            async fetchData() {
+                try {
+                    const betExplorerMatches = await this.parseBetExplorer();
+                    if (betExplorerMatches.length > 0) {
+                        return betExplorerMatches;
+                    }
+                    return this.mockMatches();
+                } catch (error) {
+                    console.error('Ошибка при загрузке матчей:', error);
+                    return this.mockMatches();
+                }
+            },
+            
+            async parseBetExplorer() {
+                try {
+                    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                    const targetUrl = 'https://www.betexplorer.com/soccer/';
+                    
+                    const response = await fetch(proxyUrl + targetUrl, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'User-Agent': 'Mozilla/5.0'
+                        }
+                    });
+                    
+                    if (!response.ok) throw new Error('Ошибка загрузки');
+                    
+                    const html = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const matches = [];
+                    
+                    const rows = doc.querySelectorAll('.table-main tr.match');
+                    rows.forEach(row => {
+                        const teams = Array.from(row.querySelectorAll('.h-text-left a')).map(a => a.textContent.trim());
+                        const odds = Array.from(row.querySelectorAll('.table-main__odds-avg')).map(o => o.textContent.trim());
+                        
+                        if (teams.length === 2 && odds.length >= 2) {
+                            matches.push({
+                                id: 'soccer_' + Math.random().toString(36).substr(2, 9),
+                                sport: 'soccer',
+                                teams: teams,
+                                odds: {
+                                    home: parseFloat(odds[0]) || 1.80,
+                                    draw: parseFloat(odds[1]) || 3.40,
+                                    away: parseFloat(odds[2]) || 4.20
+                                },
+                                time: new Date(Date.now() + Math.floor(Math.random() * 86400000)).toISOString(),
+                                competition: 'Футбол'
+                            });
+                        }
+                    });
+                    
+                    return matches.slice(0, 10);
+                } catch (error) {
+                    console.error('Ошибка парсинга:', error);
+                    return [];
+                }
+            },
+            
+            mockMatches() {
+                return [
+                    {
+                        id: 'soccer_epl',
+                        sport: 'soccer',
+                        teams: ['Манчестер Юнайтед', 'Ливерпуль'],
+                        odds: { home: 2.80, draw: 3.25, away: 2.50 },
+                        time: new Date(Date.now() + 86400000).toISOString(),
+                        competition: 'Английская Премьер-лига'
+                    },
+                    {
+                        id: 'soccer_laliga',
+                        sport: 'soccer',
+                        teams: ['Реал Мадрид', 'Барселона'],
+                        odds: { home: 2.10, draw: 3.40, away: 3.20 },
+                        time: new Date(Date.now() + 172800000).toISOString(),
+                        competition: 'Ла Лига'
+                    },
+                    {
+                        id: 'basketball_nba',
+                        sport: 'basketball',
+                        teams: ['Оклахома Сити Тандер', 'Индиана Пэйсерс'],
+                        odds: { home: 1.98, away: 1.825 },
+                        time: new Date("2025-06-06T02:30:00+03:00").toISOString(),
+                        competition: 'NBA'
+                    },
+                    {
+                        id: 'tennis_atp',
+                        sport: 'tennis',
+                        teams: ['Новак Джокович', 'Карлос Алькарас'],
+                        odds: { home: 1.75, away: 2.10 },
+                        time: new Date(Date.now() + 86400000 * 2).toISOString(),
+                        competition: 'ATP Finals'
+                    },
+                    {
+                        id: 'hockey_nhl',
+                        sport: 'hockey',
+                        teams: ['Тампа Бэй Лайтнинг', 'Колорадо Эвеланш'],
+                        odds: { home: 2.30, away: 1.65 },
+                        time: new Date(Date.now() + 86400000 * 3).toISOString(),
+                        competition: 'NHL'
+                    },
+                    {
+                        id: 'baseball_mlb',
+                        sport: 'baseball',
+                        teams: ['Нью-Йорк Янкиз', 'Бостон Ред Сокс'],
+                        odds: { home: 1.90, away: 1.95 },
+                        time: new Date(Date.now() + 86400000 * 4).toISOString(),
+                        competition: 'MLB'
+                    }
+                ];
+            },
+            
+            getCachedData() {
+                const cached = localStorage.getItem(CONFIG.cacheKey);
+                if (!cached) return null;
+                
+                const { data, timestamp } = JSON.parse(cached);
+                const age = Date.now() - timestamp;
+                
+                if (age > CONFIG.cacheDuration) {
+                    localStorage.removeItem(CONFIG.cacheKey);
+                    return null;
+                }
+                
+                return data;
+            },
+            
+            cacheData(data) {
+                const cache = {
+                    data: data,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem(CONFIG.cacheKey, JSON.stringify(cache));
+            },
+            
+            renderMatches(matches, filter = 'all') {
+                const container = document.getElementById('matches-container');
+                
+                // Фильтрация
+                const filteredMatches = filter === 'all' 
+                    ? matches 
+                    : matches.filter(match => match.sport === filter);
+                
+                // Сортировка по времени
+                filteredMatches.sort((a, b) => new Date(a.time) - new Date(b.time));
+                
+                if (filteredMatches.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--neon-pink);">
+                            <p style="font-family: 'Press Start 2P', cursive;">МАТЧИ НЕ НАЙДЕНЫ</p>
+                            <p style="color: var(--neon-blue); margin-top: 20px;">ПОПРОБУЙТЕ ИЗМЕНИТЬ ФИЛЬТР</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '<div class="matches-grid">';
+                
+                filteredMatches.forEach(match => {
+                    const date = new Date(match.time);
+                    const formattedDate = date.toLocaleDateString('ru-RU', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    const sportNames = {
+                        soccer: 'Футбол',
+                        basketball: 'Баскетбол',
+                        tennis: 'Теннис',
+                        hockey: 'Хоккей',
+                        baseball: 'Бейсбол'
+                    };
+                    
+                    html += `
+                        <div class="match-card" data-sport="${match.sport}">
+                            <div class="teams">${match.teams[0]} vs ${match.teams[1]}</div>
+                            <div class="match-info">
+                                <span>${sportNames[match.sport] || match.sport}</span>
+                                <span>${formattedDate}</span>
+                            </div>
+                            <div class="odds-container">
+                                <div class="odd" title="Победа ${match.teams[0]}">${match.odds.home.toFixed(2)}</div>
+                                ${match.odds.draw ? `<div class="odd" title="Ничья">${match.odds.draw.toFixed(2)}</div>` : ''}
+                                <div class="odd" title="Победа ${match.teams[1]}">${match.odds.away.toFixed(2)}</div>
+                            </div>
+                            <button class="play-btn" onclick="window.location.href='https://redirspinner.com/2nXK?p=%2Fregistration%2F'">СДЕЛАТЬ СТАВКУ</button>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html + '</div>';
+            },
+            
+            setupFilters() {
+                const tabs = document.querySelectorAll('.sport-tab');
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        tabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        this.currentFilter = tab.dataset.sport;
+                        
+                        // Применяем фильтр к кэшированным данным
+                        const cachedData = this.getCachedData();
+                        if (cachedData) {
+                            this.renderMatches(cachedData, this.currentFilter);
+                        }
+                    });
+                });
+            },
+            
+            setupAutoUpdate() {
+                this.updateTimer = setInterval(() => {
+                    this.loadData();
+                }, CONFIG.updateInterval);
+                
+                // Также обновляем при возвращении на вкладку
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden) {
+                        this.loadData();
+                    }
+                });
+            },
+            
+            showError(error) {
+                const container = document.getElementById('matches-container');
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--neon-pink);">
+                        <p style="font-family: 'Press Start 2P', cursive;">ОШИБКА ЗАГРУЗКИ</p>
+                        <p style="color: var(--neon-blue); margin-top: 20px;">${error.message}</p>
+                        <p style="color: white; margin-top: 10px;">ИСПОЛЬЗУЮТСЯ ДЕМО-ДАННЫЕ</p>
+                    </div>
+                `;
+                
+                // Показать mock-данные
+                this.renderMatches(this.mockMatches(), this.currentFilter);
+            }
+        };
+
+        // Глобальные функции
+        function playNow() {
+            window.location.href = "https://redirspinner.com/2nXK?p=%2Fregistration%2F";
+        }
+
+        // Запуск приложения
+        document.addEventListener('DOMContentLoaded', () => App.init());
+
+        // Service Worker для push-уведомлений (файл sw.js)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => {
+                    console.log('ServiceWorker registration successful');
+                })
+                .catch(error => {
+                    console.log('ServiceWorker registration failed:', error);
+                });
+        }
+    </script>
+
+    <!-- Файл sw.js должен быть размещен в корне вашего сайта -->
+    <script>
+        // Это содержимое должно быть в отдельном файле sw.js
+        const CACHE_NAME = 'vegas-empire-cache-v1';
+        const urlsToCache = [
+            '/',
+            '/index.html',
+            '/styles.css',
+            '/script.js',
+            'https://i.imgur.com/JQ9w5VX.png',
+            'https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3'
+        ];
+
+        self.addEventListener('install', event => {
+            event.waitUntil(
+                caches.open(CACHE_NAME)
+                    .then(cache => {
+                        return cache.addAll(urlsToCache);
+                    })
+            );
+        });
+
+        self.addEventListener('fetch', event => {
+            event.respondWith(
+                caches.match(event.request)
+                    .then(response => {
+                        if (response) {
+                            return response;
+                        }
+                        return fetch(event.request);
+                    })
+            );
+        });
+
+        self.addEventListener('push', event => {
+            const data = event.data.json();
+            const options = {
+                body: data.body,
+                icon: data.icon,
+                badge: 'https://i.imgur.com/JQ9w5VX.png',
+                vibrate: [200, 100, 200]
+            };
+
+            event.waitUntil(
+                self.registration.showNotification(data.title, options)
+            );
+        });
+
+        self.addEventListener('message', event => {
+            if (event.data.type === 'PUSH_NOTIFICATION') {
+                self.registration.showNotification(
+                    event.data.title,
+                    {
+                        body: event.data.body,
+                        icon: event.data.icon,
+                        vibrate: [200, 100, 200]
+                    }
+                );
+            }
+        });
+    </script>
+</body>
+</html>
